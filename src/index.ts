@@ -6,6 +6,10 @@ import ts from "typescript";
         EMAIL = 'EMAIL',
         PUSH_NOTIFICATION = 'PUSH_NOTIFICATION',
     }
+    enum ViewMode{
+        TODO = 'TODO',
+        REMINDER = 'REMINDER',
+    }
     const UUID = (): string => {
         return Math.random().toString(32).substr(2, 9);
     };
@@ -83,7 +87,7 @@ import ts from "typescript";
     const remider = new Reminder('Reminder created with a class', new Date(), [NotificationPlatform.EMAIL]);
 
     const taskView = {
-        render(tasks: Array<Task>) {
+        render(tasks: Array<Task>, mode: ViewMode) {
             const tasksList = document.getElementById('tasksList');
             while(tasksList?.firstChild) {
                 tasksList.removeChild(tasksList.firstChild);
@@ -95,15 +99,42 @@ import ts from "typescript";
                 li.appendChild(textNode);
                 tasksList?.appendChild(li);
             });
+
+            const todoSet = document.getElementById('todoSet');
+            const remiderSet = document.getElementById('remiderSet');
+
+            if (mode === ViewMode.TODO) {
+                todoSet?.setAttribute('style', 'display: block');
+                todoSet?.removeAttribute('disabled');
+                remiderSet?.setAttribute('style', 'display: none');
+                remiderSet?.setAttribute('disabled', 'true');
+            } else {
+                remiderSet?.setAttribute('style', 'display: block')
+                remiderSet?.removeAttribute('disabled');
+                
+            }
         },
     };
 
     const TaskController = (view: typeof taskView) => {
         const tasks: Array<Task> = [todo, remider];
+        let mode: ViewMode = ViewMode.TODO;
 
         const handleEvent = (event: Event) => {
             event.preventDefault();
-            view.render(tasks);
+            view.render(tasks, mode);
+        };
+
+        const handleToggleMode = () => {
+            switch (mode as ViewMode) {
+                case ViewMode.TODO:
+                    mode = ViewMode.REMINDER
+                    break;
+                case ViewMode.REMINDER:
+                    mode = ViewMode.TODO
+                    break
+            }
+            view.render(tasks, mode);
         }
 
         document.getElementById('taskForm')?.addEventListener('submit', handleEvent);
