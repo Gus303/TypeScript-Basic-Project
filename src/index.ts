@@ -87,6 +87,11 @@ import ts from "typescript";
     const remider = new Reminder('Reminder created with a class', new Date(), [NotificationPlatform.EMAIL]);
 
     const taskView = {
+        getTodo(form: HTMLFormElement): Todo {
+            const todoDescription = form.todoDescription.value;
+            form.reset();
+            return new Todo(todoDescription);
+        },
         render(tasks: Array<Task>, mode: ViewMode) {
             const tasksList = document.getElementById('tasksList');
             while(tasksList?.firstChild) {
