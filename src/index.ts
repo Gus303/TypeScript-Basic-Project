@@ -163,8 +163,9 @@ import ts from "typescript";
                     break
             }
             view.render(tasks, mode);
-        }
+        };
 
+        document.getElementById('toggleMode')?addEventListener('click', handleToggleMode);   
         document.getElementById('taskForm')?.addEventListener('submit', handleEvent);
     };
 
